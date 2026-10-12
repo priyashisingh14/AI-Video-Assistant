@@ -525,7 +525,20 @@ if run_btn:
             st.rerun()
 
         except Exception as e:
-            st.error(f"❌ Error during processing: {e}")
+            err_text = str(e)
+            if any(term in err_text.lower() for term in ["quota", "credit", "402", "429", "insufficient", "balance", "rate_limit"]):
+                st.error("""
+                💳 **Demo AI Credits Exhausted**
+                
+                The server's pre-configured Sarvam AI credit limit has been reached.
+                
+                👉 **How to continue testing:**
+                1. Expand **⚙️ Settings & API Keys** in the left sidebar.
+                2. Enter your own free API key from [Sarvam AI](https://dashboard.sarvam.ai/) or [Mistral AI](https://console.mistral.ai/).
+                3. Click **⚡ Analyse** to run with your key!
+                """)
+            else:
+                st.error(f"❌ Error during processing: {e}")
 
 # ── Results ──────────────────────────────────────────────────────────────────────
 if st.session_state.result:
@@ -621,18 +634,31 @@ if st.session_state.result:
 
         stream_placeholder = st.empty()
         full_reply = ""
-        for token in stream_question(r["rag_chain"], q_text):
-            full_reply += token
-            stream_placeholder.markdown(f"""
-            <div class="chat-container">
-                <div class="chat-msg" style="align-items:flex-start">
-                    <span class="chat-label bot-label">🤖 Assistant</span>
-                    <div class="chat-bubble bot-bubble">{full_reply} ▌</div>
-                </div>
-            </div>""", unsafe_allow_html=True)
+        try:
+            for token in stream_question(r["rag_chain"], q_text):
+                full_reply += token
+                stream_placeholder.markdown(f"""
+                <div class="chat-container">
+                    <div class="chat-msg" style="align-items:flex-start">
+                        <span class="chat-label bot-label">🤖 Assistant</span>
+                        <div class="chat-bubble bot-bubble">{full_reply} ▌</div>
+                    </div>
+                </div>""", unsafe_allow_html=True)
 
-        st.session_state.chat_history.append({"role": "assistant", "content": full_reply})
-        st.rerun()
+            st.session_state.chat_history.append({"role": "assistant", "content": full_reply})
+            st.rerun()
+        except Exception as e:
+            err_str = str(e).lower()
+            if any(term in err_str for term in ["quota", "credit", "402", "429", "insufficient", "balance", "rate_limit"]):
+                credit_msg = (
+                    "💳 **Demo Credits Exhausted**: The server's pre-configured Sarvam AI credits have been reached.\n\n"
+                    "👉 To continue chatting, please enter a free API key from [Sarvam AI](https://dashboard.sarvam.ai/) "
+                    "or [Mistral AI](https://console.mistral.ai/) in the sidebar settings."
+                )
+                st.session_state.chat_history.append({"role": "assistant", "content": credit_msg})
+            else:
+                st.session_state.chat_history.append({"role": "assistant", "content": f"⚠️ Could not generate answer: {e}"})
+            st.rerun()
 
     if st.session_state.chat_history:
         if st.button("🗑️ Clear Chat", type="secondary"):
