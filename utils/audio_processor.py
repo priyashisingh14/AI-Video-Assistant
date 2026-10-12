@@ -28,7 +28,7 @@ def download_youtube_audio(url: str) -> str:
         "noplaylist": True,
         "extractor_args": {
             "youtube": {
-                "player_client": ["android", "web", "mweb"]
+                "player_client": ["android", "web"]
             }
         },
         "http_headers": {
@@ -49,15 +49,25 @@ def download_youtube_audio(url: str) -> str:
     if shutil.which("node"):
         ydl_opts["js_runtimes"] = {"node": {}}
         
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=True)
-        base_name = os.path.splitext(ydl.prepare_filename(info))[0]
-        filename = base_name + ".wav"
-        if not os.path.exists(filename):
-            alt_filename = ydl.prepare_filename(info)
-            if os.path.exists(alt_filename):
-                filename = alt_filename
-    return filename
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=True)
+            base_name = os.path.splitext(ydl.prepare_filename(info))[0]
+            filename = base_name + ".wav"
+            if not os.path.exists(filename):
+                alt_filename = ydl.prepare_filename(info)
+                if os.path.exists(alt_filename):
+                    filename = alt_filename
+        return filename
+    except Exception as e:
+        err_str = str(e)
+        if "403" in err_str or "Forbidden" in err_str or "Sign in to confirm" in err_str:
+            raise RuntimeError(
+                "YouTube has restricted direct streaming from this cloud server's IP address (HTTP 403: Forbidden). "
+                "Cloud platforms (AWS / Streamlit Cloud) are frequently blocked by YouTube's bot protection.\n\n"
+                "👉 Solution: Please select 'Upload File' in the sidebar and upload your video/audio file directly to process it!"
+            ) from e
+        raise e
 
 
 

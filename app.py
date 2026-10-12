@@ -383,6 +383,7 @@ with st.sidebar:
             st.success(f"Uploaded: {uploaded_file.name}")
     else:
         source = st.text_input("YouTube URL or File Path", placeholder="https://youtube.com/watch?v=... or path/to/file.mp4")
+        st.caption("💡 *Cloud note: If YouTube blocks direct download on this server, switch to 'Upload File'.*")
 
     language = st.selectbox("Language", ["english", "hinglish"], index=0)
 
