@@ -9,8 +9,8 @@ fileWatcherType = "none"
 gatherUsageStats = false
 
 [theme]
-base = "dark"
-primaryColor = "#10b981"
-backgroundColor = "#0b0f10"
-secondaryBackgroundColor = "#111718"
-textColor = "#ecfdf5"
+base = "light"
+primaryColor = "#1d68ed"
+backgroundColor = "#edf5fd"
+secondaryBackgroundColor = "#f4f8fe"
+textColor = "#0f172a"

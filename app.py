@@ -44,17 +44,17 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
-/* ── Root Variables: Deep Obsidian & Emerald Green ── */
+/* ── Root Variables: Modern Clean Light Blue Theme ── */
 :root {
-    --bg: #0b0f10;
-    --surface: #111718;
-    --surface-2: #162021;
-    --border: #1f2d2e;
-    --accent: #10b981;
-    --accent-glow: #34d399;
-    --accent-2: #14b8a6;
-    --text: #ecfdf5;
-    --text-muted: #7c8e96;
+    --bg: #edf5fd;
+    --surface: #ffffff;
+    --surface-2: #f4f8fe;
+    --border: #cfe2f7;
+    --accent: #1d68ed;
+    --accent-glow: #3b82f6;
+    --accent-2: #0284c7;
+    --text: #0f172a;
+    --text-muted: #64748b;
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
@@ -71,23 +71,23 @@ html, body, [class*="css"] {
     background: var(--bg) !important;
 }
 
-/* Animated grid background with emerald glow */
+/* Subtle soft blue grid background */
 .stApp::before {
     content: '';
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background-image:
-        linear-gradient(rgba(16, 185, 129, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
+        linear-gradient(rgba(29, 104, 237, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(29, 104, 237, 0.04) 1px, transparent 1px);
+    background-size: 36px 36px;
     pointer-events: none;
     z-index: 0;
 }
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
-    background: var(--surface) !important;
+    background: #f4f8fe !important;
     border-right: 1px solid var(--border) !important;
 }
 
@@ -98,7 +98,7 @@ html, body, [class*="css"] {
 /* ── Headings ── */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Syne', sans-serif !important;
-    color: var(--text) !important;
+    color: #0f172a !important;
 }
 
 /* ── Hero Title ── */
@@ -108,7 +108,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 800;
     line-height: 1.1;
     margin: 0;
-    background: linear-gradient(135deg, #ffffff 0%, #34d399 45%, #14b8a6 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1d68ed 50%, #0284c7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -117,7 +117,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-sub {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: #475569;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     margin-top: 0.5rem;
@@ -125,36 +125,37 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Cards ── */
 .card {
-    background: var(--surface);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1rem;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 16px rgba(29, 104, 237, 0.05);
     transition: all 0.25s ease;
 }
 
 .card:hover {
-    border-color: rgba(16, 185, 129, 0.45);
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08);
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px rgba(29, 104, 237, 0.12);
 }
 
 .card::before {
     content: '';
     position: absolute;
     top: 0; left: 0;
-    width: 3px; height: 100%;
+    width: 4px; height: 100%;
     background: linear-gradient(180deg, var(--accent), var(--accent-2));
 }
 
 .card-title {
     font-family: 'Syne', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: #475569;
     margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
@@ -164,42 +165,42 @@ h1, h2, h3, h4, h5, h6 {
 .card-content {
     font-size: 0.875rem;
     line-height: 1.7;
-    color: var(--text);
+    color: #1e293b;
 }
 
 /* ── Accent Badges ── */
 .badge {
     display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
     font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
-.badge-purple { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-.badge-cyan   { background: rgba(20,184,166,0.15); color: #2dd4bf; border: 1px solid rgba(20,184,166,0.3); }
-.badge-green  { background: rgba(16,185,129,0.2);  color: #10b981; border: 1px solid rgba(16,185,129,0.4); }
+.badge-purple { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.badge-cyan   { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+.badge-green  { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
 
 /* ── Input & Buttons ── */
 .stTextInput > div > div > input,
 .stSelectbox > div > div {
-    background: var(--surface-2) !important;
+    background: #ffffff !important;
     border: 1px solid var(--border) !important;
     border-radius: 8px !important;
-    color: var(--text) !important;
+    color: #0f172a !important;
     font-family: 'JetBrains Mono', monospace !important;
 }
 
 .stTextInput > div > div > input:focus {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 0 2px rgba(16,185,129,0.25) !important;
+    box-shadow: 0 0 0 2px rgba(29, 104, 237, 0.2) !important;
 }
 
 .stButton > button {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-    color: #0b0f10 !important;
+    background: linear-gradient(135deg, #1d68ed 0%, #0284c7 100%) !important;
+    color: #ffffff !important;
     border: none !important;
     border-radius: 8px !important;
     font-family: 'Syne', sans-serif !important;
@@ -209,18 +210,19 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.6rem 1.5rem !important;
     transition: all 0.2s !important;
     text-transform: uppercase !important;
+    box-shadow: 0 4px 14px rgba(29, 104, 237, 0.25) !important;
 }
 
 .stButton > button:hover {
     transform: translateY(-1px) !important;
-    box-shadow: 0 8px 25px rgba(16,185,129,0.4) !important;
-    background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+    box-shadow: 0 8px 25px rgba(29, 104, 237, 0.4) !important;
+    background: linear-gradient(135deg, #2563eb 0%, #0369a1 100%) !important;
 }
 
 /* Secondary button */
 .stButton > button[kind="secondary"] {
-    background: var(--surface-2) !important;
-    color: var(--text) !important;
+    background: #ffffff !important;
+    color: #475569 !important;
     border: 1px solid var(--border) !important;
 }
 
@@ -230,11 +232,13 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    background: var(--surface-2);
+    background: #ffffff;
     border-radius: 8px;
     margin: 0.4rem 0;
     border: 1px solid var(--border);
     font-size: 0.8rem;
+    color: #1e293b;
+    box-shadow: 0 2px 6px rgba(29, 104, 237, 0.04);
 }
 
 .status-dot {
@@ -243,9 +247,9 @@ h1, h2, h3, h4, h5, h6 {
     flex-shrink: 0;
 }
 
-.dot-active   { background: var(--accent-glow); box-shadow: 0 0 8px var(--accent-glow); animation: pulse 1.5s infinite; }
+.dot-active   { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 1.5s infinite; }
 .dot-done     { background: var(--success); }
-.dot-pending  { background: var(--border); }
+.dot-pending  { background: #94a3b8; }
 
 @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -254,13 +258,14 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Chat ── */
 .chat-container {
-    background: var(--surface);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 1.25rem;
     max-height: 420px;
     overflow-y: auto;
     margin-bottom: 1rem;
+    box-shadow: 0 4px 16px rgba(29, 104, 237, 0.05);
 }
 
 .chat-msg {
@@ -279,18 +284,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .chat-bubble {
     display: inline-block;
-    padding: 0.6rem 1rem;
+    padding: 0.65rem 1.1rem;
     border-radius: 10px;
     font-size: 0.85rem;
     line-height: 1.6;
     max-width: 90%;
 }
 
-.user-label  { color: var(--accent-glow); }
-.bot-label   { color: var(--accent-2); }
+.user-label  { color: #1d4ed8; }
+.bot-label   { color: #0284c7; }
 
-.user-bubble { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); align-self: flex-end; }
-.bot-bubble  { background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.2);  align-self: flex-start; }
+.user-bubble { background: #dbeafe; border: 1px solid #bfdbfe; color: #0f172a; align-self: flex-end; }
+.bot-bubble  { background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; align-self: flex-start; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
 
 /* ── Divider ── */
 hr {
@@ -301,7 +306,7 @@ hr {
 
 /* ── Transcript box ── */
 .transcript-box {
-    background: var(--surface-2);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 1.25rem;
@@ -309,7 +314,7 @@ hr {
     line-height: 1.8;
     max-height: 300px;
     overflow-y: auto;
-    color: var(--text-muted);
+    color: #334155;
     white-space: pre-wrap;
     word-break: break-word;
 }
@@ -317,8 +322,8 @@ hr {
 /* ── Stale Streamlit elements ── */
 .stProgress > div > div > div { background: var(--accent) !important; }
 .stSpinner > div { border-top-color: var(--accent) !important; }
-[data-testid="stMarkdownContainer"] p { color: var(--text) !important; }
-label { color: var(--text-muted) !important; font-size: 0.8rem !important; }
+[data-testid="stMarkdownContainer"] p { color: #0f172a !important; }
+label { color: #475569 !important; font-size: 0.8rem !important; }
 
 /* ── Hide "Press Enter to apply" instructions ── */
 [data-testid="InputInstructions"],
@@ -333,9 +338,9 @@ div[data-testid="InputInstructions"],
 
 /* scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+::-webkit-scrollbar-track { background: #edf5fd; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 </style>
 """, unsafe_allow_html=True)
 
