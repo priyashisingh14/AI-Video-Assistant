@@ -44,17 +44,17 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
-/* ── Root Variables ── */
+/* ── Root Variables: Deep Obsidian & Emerald Green ── */
 :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface-2: #1a1a25;
-    --border: #2a2a3a;
-    --accent: #7c3aed;
-    --accent-glow: #9f67ff;
-    --accent-2: #06b6d4;
-    --text: #e8e8f0;
-    --text-muted: #7070a0;
+    --bg: #0b0f10;
+    --surface: #111718;
+    --surface-2: #162021;
+    --border: #1f2d2e;
+    --accent: #10b981;
+    --accent-glow: #34d399;
+    --accent-2: #14b8a6;
+    --text: #ecfdf5;
+    --text-muted: #7c8e96;
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
@@ -71,15 +71,15 @@ html, body, [class*="css"] {
     background: var(--bg) !important;
 }
 
-/* Animated grid background */
+/* Animated grid background with emerald glow */
 .stApp::before {
     content: '';
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background-image:
-        linear-gradient(rgba(124, 58, 237, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124, 58, 237, 0.03) 1px, transparent 1px);
+        linear-gradient(rgba(16, 185, 129, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
@@ -108,7 +108,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 800;
     line-height: 1.1;
     margin: 0;
-    background: linear-gradient(135deg, #ffffff 0%, var(--accent-glow) 50%, var(--accent-2) 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #34d399 45%, #14b8a6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -132,11 +132,12 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: all 0.25s ease;
 }
 
 .card:hover {
-    border-color: var(--accent);
+    border-color: rgba(16, 185, 129, 0.45);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08);
 }
 
 .card::before {
@@ -166,7 +167,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text);
 }
 
-/* ── Accent Badge ── */
+/* ── Accent Badges ── */
 .badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;
@@ -177,9 +178,9 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
-.badge-purple { background: rgba(124,58,237,0.2); color: var(--accent-glow); border: 1px solid rgba(124,58,237,0.3); }
-.badge-cyan   { background: rgba(6,182,212,0.15); color: var(--accent-2);    border: 1px solid rgba(6,182,212,0.3); }
-.badge-green  { background: rgba(16,185,129,0.15); color: var(--success);    border: 1px solid rgba(16,185,129,0.3); }
+.badge-purple { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+.badge-cyan   { background: rgba(20,184,166,0.15); color: #2dd4bf; border: 1px solid rgba(20,184,166,0.3); }
+.badge-green  { background: rgba(16,185,129,0.2);  color: #10b981; border: 1px solid rgba(16,185,129,0.4); }
 
 /* ── Input & Buttons ── */
 .stTextInput > div > div > input,
@@ -193,16 +194,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .stTextInput > div > div > input:focus {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 0 2px rgba(124,58,237,0.2) !important;
+    box-shadow: 0 0 0 2px rgba(16,185,129,0.25) !important;
 }
 
 .stButton > button {
-    background: linear-gradient(135deg, var(--accent), #5b21b6) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #0b0f10 !important;
     border: none !important;
     border-radius: 8px !important;
     font-family: 'Syne', sans-serif !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
     font-size: 0.875rem !important;
     letter-spacing: 0.05em !important;
     padding: 0.6rem 1.5rem !important;
@@ -212,12 +213,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .stButton > button:hover {
     transform: translateY(-1px) !important;
-    box-shadow: 0 8px 25px rgba(124,58,237,0.4) !important;
+    box-shadow: 0 8px 25px rgba(16,185,129,0.4) !important;
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
 }
 
 /* Secondary button */
 .stButton > button[kind="secondary"] {
     background: var(--surface-2) !important;
+    color: var(--text) !important;
     border: 1px solid var(--border) !important;
 }
 
@@ -286,8 +289,8 @@ h1, h2, h3, h4, h5, h6 {
 .user-label  { color: var(--accent-glow); }
 .bot-label   { color: var(--accent-2); }
 
-.user-bubble { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.25); align-self: flex-end; }
-.bot-bubble  { background: rgba(6,182,212,0.1);  border: 1px solid rgba(6,182,212,0.2);   align-self: flex-start; }
+.user-bubble { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); align-self: flex-end; }
+.bot-bubble  { background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.2);  align-self: flex-start; }
 
 /* ── Divider ── */
 hr {
