@@ -67,10 +67,24 @@ html, body, [class*="css"] {
     color: var(--text) !important;
 }
 
-.stApp {
-    background: var(--bg) !important;
+.stApp, [data-testid="stAppViewContainer"] {
+    background-color: var(--bg) !important;
+    background-image: none !important;
 }
 
+/* Explicitly eliminate all grid textures, box lines, and pseudo-elements */
+.stApp::before,
+.stApp::after,
+[data-testid="stAppViewContainer"]::before,
+[data-testid="stAppViewContainer"]::after,
+[data-testid="stHeader"]::before {
+    display: none !important;
+    content: none !important;
+    background: none !important;
+    background-image: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
