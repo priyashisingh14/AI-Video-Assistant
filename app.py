@@ -71,19 +71,6 @@ html, body, [class*="css"] {
     background: var(--bg) !important;
 }
 
-/* Subtle soft blue grid background */
-.stApp::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-image:
-        linear-gradient(rgba(29, 104, 237, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(29, 104, 237, 0.04) 1px, transparent 1px);
-    background-size: 36px 36px;
-    pointer-events: none;
-    z-index: 0;
-}
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
