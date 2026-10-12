@@ -13,7 +13,7 @@ for p in [
 import streamlit as st
 import time
 from dotenv import load_dotenv
-from utils.audio_processor import process_input
+from utils.audio_processor import process_input, fetch_youtube_transcript
 from core.transcriber import transcribe_all
 from core.summarizer import summarize, generate_title
 from core.extractor import extract_action_items, extract_key_decisions, extract_questions
@@ -468,13 +468,22 @@ if run_btn:
 
         try:
             with st.status("🎬 Processing Video...", expanded=True) as status_box:
-                st.write("🔊 **Step 1/6**: Downloading & extracting audio...")
-                chunks = process_input(source)
-                st.write(f"✓ Audio extracted ({len(chunks)} chunk(s))")
+                transcript = None
+                is_youtube = source.startswith("http://") or source.startswith("https://")
+                if is_youtube:
+                    st.write("🔍 Checking for direct YouTube transcript (fast cloud bypass)...")
+                    transcript = fetch_youtube_transcript(source)
+                    if transcript:
+                        st.write(f"✓ Retrieved transcript directly ({len(transcript)} characters) — avoided cloud video download!")
 
-                st.write(f"📝 **Step 2/6**: Transcribing speech ({language})...")
-                transcript = transcribe_all(chunks, language)
-                st.write(f"✓ Transcription complete ({len(transcript)} characters)")
+                if not transcript:
+                    st.write("🔊 **Step 1/2**: Downloading & extracting audio...")
+                    chunks = process_input(source)
+                    st.write(f"✓ Audio extracted ({len(chunks)} chunk(s))")
+
+                    st.write(f"📝 **Step 2/2**: Transcribing speech ({language})...")
+                    transcript = transcribe_all(chunks, language)
+                    st.write(f"✓ Transcription complete ({len(transcript)} characters)")
 
                 st.write("⚡ **Step 3/4**: Generating title, summary, action items & chat index in parallel...")
                 with ThreadPoolExecutor(max_workers=6) as executor:

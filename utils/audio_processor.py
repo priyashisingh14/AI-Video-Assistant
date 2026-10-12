@@ -110,3 +110,47 @@ def process_input(source: str) -> list:
     return chunks
 
 
+def extract_youtube_id(url: str):
+    import re
+    patterns = [
+        r"(?:v=|\/)([0-9A-Za-z_-]{11}).*",
+        r"(?:youtu\.be\/)([0-9A-Za-z_-]{11})",
+        r"(?:embed\/)([0-9A-Za-z_-]{11})",
+        r"(?:shorts\/)([0-9A-Za-z_-]{11})",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, url)
+        if match:
+            return match.group(1)
+    return None
+
+
+def fetch_youtube_transcript(url: str):
+    """
+    Attempts to fetch existing captions/subtitles directly from YouTube.
+    Bypasses raw video/audio media download and avoids 403 Forbidden on cloud datacenters.
+    Returns full transcript string if found, otherwise None.
+    """
+    video_id = extract_youtube_id(url)
+    if not video_id:
+        return None
+    try:
+        from youtube_transcript_api import YouTubeTranscriptApi
+        ytt = YouTubeTranscriptApi()
+        transcript_list = ytt.list(video_id)
+
+        # Priority 1: English (manual or auto)
+        for t in transcript_list:
+            if t.language_code.startswith("en"):
+                lines = t.fetch()
+                return " ".join(item.text for item in lines)
+
+        # Priority 2: Any available language (Hindi, etc.)
+        for t in transcript_list:
+            lines = t.fetch()
+            return " ".join(item.text for item in lines)
+    except Exception as e:
+        print(f"Direct transcript lookup not available for {video_id}: {e}")
+        return None
+
+
