@@ -64,10 +64,11 @@ st.markdown("""
 html, body, [class*="css"] {
     font-family: 'JetBrains Mono', monospace;
     background-color: var(--bg) !important;
+    background-image: none !important;
     color: var(--text) !important;
 }
 
-.stApp, [data-testid="stAppViewContainer"] {
+html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main, section.main, .block-container {
     background-color: var(--bg) !important;
     background-image: none !important;
 }
@@ -77,7 +78,12 @@ html, body, [class*="css"] {
 .stApp::after,
 [data-testid="stAppViewContainer"]::before,
 [data-testid="stAppViewContainer"]::after,
-[data-testid="stHeader"]::before {
+[data-testid="stHeader"]::before,
+[data-testid="stHeader"]::after,
+.main::before,
+.main::after,
+section.main::before,
+section.main::after {
     display: none !important;
     content: none !important;
     background: none !important;
