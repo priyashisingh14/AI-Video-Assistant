@@ -644,19 +644,15 @@ if st.session_state.result:
         </div>""", unsafe_allow_html=True)
 
     # Chat input
-    if "chat_input" not in st.session_state:
-        st.session_state.chat_input = ""
-
     chat_col1, chat_col2 = st.columns([5, 1], gap="small")
     with chat_col1:
-        user_input = st.text_input("Your question", placeholder="What were the main decisions made?", label_visibility="collapsed", key="chat_input")
+        user_input = st.text_input("Your question", placeholder="What were the main decisions made?", label_visibility="collapsed")
     with chat_col2:
         send_btn = st.button("Send →", use_container_width=True)
 
     if send_btn and user_input.strip():
         q_text = user_input.strip()
         st.session_state.chat_history.append({"role": "user", "content": q_text})
-        st.session_state.chat_input = ""  # clear input box
 
         stream_placeholder = st.empty()
         full_reply = ""
