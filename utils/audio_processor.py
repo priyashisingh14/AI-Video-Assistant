@@ -48,6 +48,11 @@ def download_youtube_audio(url: str) -> str:
         ydl_opts["ffmpeg_location"] = ffmpeg_dir
     if shutil.which("node"):
         ydl_opts["js_runtimes"] = {"node": {}}
+
+    proxy = os.getenv("YOUTUBE_PROXY") or os.getenv("HTTP_PROXY") or os.getenv("HTTPS_PROXY")
+    if proxy and proxy.strip():
+        ydl_opts["proxy"] = proxy.strip()
+        print(f"Using proxy for yt-dlp: {proxy.split('@')[-1] if '@' in proxy else 'configured'}")
         
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -142,22 +147,30 @@ def fetch_youtube_transcript(url: str):
             return item.get("text", "")
         return str(item)
 
+    proxy = os.getenv("YOUTUBE_PROXY") or os.getenv("HTTP_PROXY") or os.getenv("HTTPS_PROXY")
+    proxies_dict = {"http": proxy.strip(), "https": proxy.strip()} if proxy and proxy.strip() else None
+
     # Strategy 1: youtube-transcript-api (supports both modern object and legacy dict formats)
     try:
         from youtube_transcript_api import YouTubeTranscriptApi
+        import requests
+
+        session = requests.Session()
+        if proxies_dict:
+            session.proxies.update(proxies_dict)
 
         # Check for legacy get_transcript method
         if hasattr(YouTubeTranscriptApi, "get_transcript"):
             try:
                 for lang_code in [["en"], ["en-US"], ["en-GB"], ["hi"]]:
-                    entries = YouTubeTranscriptApi.get_transcript(video_id, languages=lang_code)
+                    entries = YouTubeTranscriptApi.get_transcript(video_id, languages=lang_code, proxies=proxies_dict)
                     if entries:
                         return " ".join(_get_text(item) for item in entries)
             except Exception:
                 pass
 
         # Modern instance-based list() method
-        ytt = YouTubeTranscriptApi()
+        ytt = YouTubeTranscriptApi(http_client=session)
         transcript_list = ytt.list(video_id)
 
         # Priority 1: English (manual or auto)
@@ -183,6 +196,9 @@ def fetch_youtube_transcript(url: str):
             "quiet": True,
             "no_warnings": True,
         }
+        if proxy and proxy.strip():
+            ydl_opts_sub["proxy"] = proxy.strip()
+
         with yt_dlp.YoutubeDL(ydl_opts_sub) as ydl:
             info = ydl.extract_info(url, download=False)
             subs = info.get("subtitles") or info.get("automatic_captions") or {}
@@ -207,7 +223,7 @@ def fetch_youtube_transcript(url: str):
 
                 if sub_url:
                     import requests
-                    resp = requests.get(sub_url, timeout=15)
+                    resp = requests.get(sub_url, proxies=proxies_dict, timeout=15)
                     if resp.ok:
                         if "json" in resp.headers.get("Content-Type", "") or sub_url.endswith("json3"):
                             data = resp.json()

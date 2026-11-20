@@ -430,6 +430,22 @@ with st.sidebar:
         if mistral_key_val.strip():
             os.environ["MISTRAL_API_KEY"] = mistral_key_val.strip()
 
+        has_proxy = bool(os.getenv("YOUTUBE_PROXY") or os.getenv("HTTP_PROXY") or os.getenv("HTTPS_PROXY"))
+        if has_proxy:
+            st.markdown('<small style="color:#10b981;">✓ YouTube Proxy connected (secured)</small>', unsafe_allow_html=True)
+        proxy_val = st.text_input(
+            "YouTube Proxy (Optional)",
+            value="",
+            type="password",
+            placeholder="Connected via Server" if has_proxy else "http://user:pass@host:port",
+            help="HTTP/HTTPS proxy to bypass YouTube 403 blocks on cloud hosting (e.g. Webshare residential proxy).",
+        )
+        if proxy_val.strip():
+            p_val = proxy_val.strip()
+            os.environ["YOUTUBE_PROXY"] = p_val
+            os.environ["HTTP_PROXY"] = p_val
+            os.environ["HTTPS_PROXY"] = p_val
+
         whisper_model_choice = st.selectbox(
             "Whisper Model",
             ["tiny", "base", "small", "medium"],
