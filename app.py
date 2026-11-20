@@ -557,7 +557,22 @@ if run_btn:
 
         except Exception as e:
             err_text = str(e)
-            if any(term in err_text.lower() for term in ["quota", "credit", "402", "429", "insufficient", "balance", "rate_limit"]):
+            is_proxy_err = any(p in err_text.lower() for p in ["proxy", "tunnel", "webshare"])
+            is_quota_err = any(term in err_text.lower() for term in ["quota", "credit", "insufficient_quota", "insufficient balance", "rate_limit"]) or (("402" in err_text or "429" in err_text) and not is_proxy_err)
+
+            if is_proxy_err:
+                st.error(f"""
+                🌐 **Proxy Connection Error**
+                
+                The proxy server failed to connect or rejected the request:
+                `{err_text}`
+                
+                👉 **How to fix:**
+                1. If using Webshare, check your Webshare dashboard bandwidth or IP authorization.
+                2. Or clear the **YouTube Proxy** field in **⚙️ Settings & API Keys** to disable it.
+                3. Or switch to **'Upload File'** in the sidebar to process your video/audio file directly!
+                """)
+            elif is_quota_err:
                 st.error("""
                 💳 **Demo AI Credits Exhausted**
                 
@@ -680,7 +695,9 @@ if st.session_state.result:
             st.rerun()
         except Exception as e:
             err_str = str(e).lower()
-            if any(term in err_str for term in ["quota", "credit", "402", "429", "insufficient", "balance", "rate_limit"]):
+            is_proxy_err = any(p in err_str for p in ["proxy", "tunnel", "webshare"])
+            is_quota_err = any(term in err_str for term in ["quota", "credit", "insufficient_quota", "insufficient balance", "rate_limit"]) or (("402" in err_str or "429" in err_str) and not is_proxy_err)
+            if is_quota_err:
                 credit_msg = (
                     "💳 **Demo Credits Exhausted**: The server's pre-configured Sarvam AI credits have been reached.\n\n"
                     "👉 To continue chatting, please enter a free API key from [Sarvam AI](https://dashboard.sarvam.ai/) "
