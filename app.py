@@ -430,22 +430,6 @@ with st.sidebar:
         if mistral_key_val.strip():
             os.environ["MISTRAL_API_KEY"] = mistral_key_val.strip()
 
-        has_proxy = bool(os.getenv("YOUTUBE_PROXY") or os.getenv("HTTP_PROXY") or os.getenv("HTTPS_PROXY"))
-        if has_proxy:
-            st.markdown('<small style="color:#10b981;">✓ YouTube Proxy connected (secured)</small>', unsafe_allow_html=True)
-        proxy_val = st.text_input(
-            "YouTube Proxy (Optional)",
-            value="",
-            type="password",
-            placeholder="Connected via Server" if has_proxy else "http://user:pass@host:port",
-            help="HTTP/HTTPS proxy to bypass YouTube 403 blocks on cloud hosting (e.g. Webshare residential proxy).",
-        )
-        if proxy_val.strip():
-            p_val = proxy_val.strip()
-            os.environ["YOUTUBE_PROXY"] = p_val
-            os.environ["HTTP_PROXY"] = p_val
-            os.environ["HTTPS_PROXY"] = p_val
-
         whisper_model_choice = st.selectbox(
             "Whisper Model",
             ["tiny", "base", "small", "medium"],
@@ -557,22 +541,9 @@ if run_btn:
 
         except Exception as e:
             err_text = str(e)
-            is_proxy_err = any(p in err_text.lower() for p in ["proxy", "tunnel", "webshare"])
-            is_quota_err = any(term in err_text.lower() for term in ["quota", "credit", "insufficient_quota", "insufficient balance", "rate_limit"]) or (("402" in err_text or "429" in err_text) and not is_proxy_err)
+            is_quota_err = any(term in err_text.lower() for term in ["quota", "credit", "insufficient_quota", "insufficient balance", "rate_limit", "429"])
 
-            if is_proxy_err:
-                st.error(f"""
-                🌐 **Proxy Connection Error**
-                
-                The proxy server failed to connect or rejected the request:
-                `{err_text}`
-                
-                👉 **How to fix:**
-                1. If using Webshare, check your Webshare dashboard bandwidth or IP authorization.
-                2. Or clear the **YouTube Proxy** field in **⚙️ Settings & API Keys** to disable it.
-                3. Or switch to **'Upload File'** in the sidebar to process your video/audio file directly!
-                """)
-            elif is_quota_err:
+            if is_quota_err:
                 st.error("""
                 💳 **Demo AI Credits Exhausted**
                 
@@ -695,8 +666,7 @@ if st.session_state.result:
             st.rerun()
         except Exception as e:
             err_str = str(e).lower()
-            is_proxy_err = any(p in err_str for p in ["proxy", "tunnel", "webshare"])
-            is_quota_err = any(term in err_str for term in ["quota", "credit", "insufficient_quota", "insufficient balance", "rate_limit"]) or (("402" in err_str or "429" in err_str) and not is_proxy_err)
+            is_quota_err = any(term in err_str for term in ["quota", "credit", "insufficient_quota", "insufficient balance", "rate_limit", "429"])
             if is_quota_err:
                 credit_msg = (
                     "💳 **Demo Credits Exhausted**: The server's pre-configured Sarvam AI credits have been reached.\n\n"
