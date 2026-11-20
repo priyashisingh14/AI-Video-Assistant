@@ -28,7 +28,7 @@ def download_youtube_audio(url: str) -> str:
         "noplaylist": True,
         "extractor_args": {
             "youtube": {
-                "player_client": ["android", "web"]
+                "player_client": ["ios", "mweb", "tv", "android", "web"]
             }
         },
         "http_headers": {
@@ -134,8 +134,29 @@ def fetch_youtube_transcript(url: str):
     video_id = extract_youtube_id(url)
     if not video_id:
         return None
+
+    def _get_text(item):
+        if hasattr(item, "text"):
+            return item.text
+        if isinstance(item, dict):
+            return item.get("text", "")
+        return str(item)
+
+    # Strategy 1: youtube-transcript-api (supports both modern object and legacy dict formats)
     try:
         from youtube_transcript_api import YouTubeTranscriptApi
+
+        # Check for legacy get_transcript method
+        if hasattr(YouTubeTranscriptApi, "get_transcript"):
+            try:
+                for lang_code in [["en"], ["en-US"], ["en-GB"], ["hi"]]:
+                    entries = YouTubeTranscriptApi.get_transcript(video_id, languages=lang_code)
+                    if entries:
+                        return " ".join(_get_text(item) for item in entries)
+            except Exception:
+                pass
+
+        # Modern instance-based list() method
         ytt = YouTubeTranscriptApi()
         transcript_list = ytt.list(video_id)
 
@@ -143,14 +164,73 @@ def fetch_youtube_transcript(url: str):
         for t in transcript_list:
             if t.language_code.startswith("en"):
                 lines = t.fetch()
-                return " ".join(item.text for item in lines)
+                return " ".join(_get_text(item) for item in lines)
 
         # Priority 2: Any available language (Hindi, etc.)
         for t in transcript_list:
             lines = t.fetch()
-            return " ".join(item.text for item in lines)
+            return " ".join(_get_text(item) for item in lines)
     except Exception as e:
-        print(f"Direct transcript lookup not available for {video_id}: {e}")
-        return None
+        print(f"youtube-transcript-api lookup failed for {video_id}: {e}")
+
+    # Strategy 2: yt-dlp subtitle metadata extraction (no video/audio download needed)
+    try:
+        ydl_opts_sub = {
+            "skip_download": True,
+            "writesubtitles": True,
+            "writeautomaticsub": True,
+            "subtitleslangs": ["en.*", "hi.*"],
+            "quiet": True,
+            "no_warnings": True,
+        }
+        with yt_dlp.YoutubeDL(ydl_opts_sub) as ydl:
+            info = ydl.extract_info(url, download=False)
+            subs = info.get("subtitles") or info.get("automatic_captions") or {}
+
+            chosen_track = None
+            for lang, tracks in subs.items():
+                if lang.startswith("en"):
+                    chosen_track = tracks
+                    break
+            if not chosen_track and subs:
+                chosen_track = next(iter(subs.values()))
+
+            if chosen_track:
+                sub_url = None
+                for track in chosen_track:
+                    ext = track.get("ext", "")
+                    if ext == "json3":
+                        sub_url = track.get("url")
+                        break
+                    elif ext == "vtt" and not sub_url:
+                        sub_url = track.get("url")
+
+                if sub_url:
+                    import requests
+                    resp = requests.get(sub_url, timeout=15)
+                    if resp.ok:
+                        if "json" in resp.headers.get("Content-Type", "") or sub_url.endswith("json3"):
+                            data = resp.json()
+                            events = data.get("events", [])
+                            lines = []
+                            for ev in events:
+                                segs = ev.get("segs", [])
+                                line = "".join(s.get("utf8", "") for s in segs).strip()
+                                if line and line != "\n":
+                                    lines.append(line)
+                            if lines:
+                                return " ".join(lines)
+                        else:
+                            import re
+                            clean_text = re.sub(r"<[^>]+>", "", resp.text)
+                            clean_text = re.sub(r"\d{2}:\d{2}:\d{2}\.\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}\.\d{3}", "", clean_text)
+                            clean_text = re.sub(r"WEBVTT|NOTE.*", "", clean_text)
+                            words = " ".join(clean_text.split())
+                            if words:
+                                return words
+    except Exception as e:
+        print(f"yt-dlp subtitle extraction failed for {url}: {e}")
+
+    return None
 
 
