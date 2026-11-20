@@ -159,6 +159,15 @@ def fetch_youtube_transcript(url: str):
         if proxies_dict:
             session.proxies.update(proxies_dict)
 
+        proxy_config = None
+        if proxy and proxy.strip():
+            try:
+                from youtube_transcript_api.proxies import GenericProxyConfig
+                p_clean = proxy.strip()
+                proxy_config = GenericProxyConfig(http_url=p_clean, https_url=p_clean)
+            except Exception:
+                proxy_config = None
+
         # Check for legacy get_transcript method
         if hasattr(YouTubeTranscriptApi, "get_transcript"):
             try:
@@ -170,7 +179,7 @@ def fetch_youtube_transcript(url: str):
                 pass
 
         # Modern instance-based list() method
-        ytt = YouTubeTranscriptApi(http_client=session)
+        ytt = YouTubeTranscriptApi(proxy_config=proxy_config, http_client=session)
         transcript_list = ytt.list(video_id)
 
         # Priority 1: English (manual or auto)
@@ -195,6 +204,11 @@ def fetch_youtube_transcript(url: str):
             "subtitleslangs": ["en.*", "hi.*"],
             "quiet": True,
             "no_warnings": True,
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["ios", "mweb", "tv", "android", "web"]
+                }
+            },
         }
         if proxy and proxy.strip():
             ydl_opts_sub["proxy"] = proxy.strip()
