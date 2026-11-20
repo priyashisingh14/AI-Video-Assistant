@@ -31,6 +31,11 @@ try:
 except Exception:
     pass
 
+# Always clear proxy env vars — proxy support has been removed.
+# yt-dlp auto-picks up HTTP_PROXY/HTTPS_PROXY, so we must unset them explicitly.
+for _proxy_var in ["YOUTUBE_PROXY", "HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"]:
+    os.environ.pop(_proxy_var, None)
+
 # ─── Page Config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="AI Video Assistant",
